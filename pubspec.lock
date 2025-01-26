@@ -65,6 +65,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.23.0"
+  flame_forge2d:
+    dependency: "direct main"
+    description:
+      name: flame_forge2d
+      sha256: "91ae9e017ac38b995600271c3c18797857674dfe66d68be1aa454b289dfc8590"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.18.2+4"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -83,6 +91,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  forge2d:
+    dependency: transitive
+    description:
+      name: forge2d
+      sha256: "6aac85f1cb9f7e3720bff5d6884ff2e1bcb74402e6fe271599b7b1f65574f5e2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.13.1"
   leak_tracker:
     dependency: transitive
     description:
