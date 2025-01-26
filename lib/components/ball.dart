@@ -39,6 +39,6 @@ class Ball extends BodyComponent {
 
     final boundaryFixture = FixtureDef(edgeShape);
     world.createBody(BodyDef()..type = BodyType.static)
-      ..createFixture(boundaryFixture);
+      .createFixture(boundaryFixture);
   }
 }
