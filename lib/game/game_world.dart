@@ -13,6 +13,7 @@ class GameWorld extends Forge2DGame with KeyboardEvents {  // KeyboardEvents mix
   final Ball ball = Ball();
   final Goal goal = Goal();
 
+  final Set<LogicalKeyboardKey> _keysPressed = {};
 
   @override
   Future<void> onLoad() async {
@@ -32,24 +33,30 @@ class GameWorld extends Forge2DGame with KeyboardEvents {  // KeyboardEvents mix
     super.onKeyEvent(event, keysPressed);
 
     if (event is KeyDownEvent) {
-      print('키 아래 눌림: ${event.logicalKey}');  // 눌린 키를 로그로 출력
-
-      if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-        _player.moveUp();
-        print('왼쪽 화살표 키 눌렀음: 위쪽 이동');
-      } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-        print('왼쪽 화살표 키 눌렀음: 아래쪽 이동');
-        _player.moveDown();
-      }
-      else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-        print('왼쪽 화살표 키 눌렀음: 왼쪽 이동');
-        _player.moveLeft();
-      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-        print('오른쪽 화살표 키 눌렀음: 오른쪽 이동');
-        _player.moveRight();
-      }
+      _keysPressed.add(event.logicalKey); // 눌린 키를 추적
+    } else if (event is KeyUpEvent) {
+      _keysPressed.remove(event.logicalKey); // 떼어진 키를 추적
     }
 
     return KeyEventResult.handled; // 키 입력을 처리했음을 나타내는 반환값
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    // 지속적으로 키가 눌려있는 동안 이동 처리
+    if (_keysPressed.contains(LogicalKeyboardKey.arrowUp)) {
+      _player.moveUp();
+    }
+    if (_keysPressed.contains(LogicalKeyboardKey.arrowDown)) {
+      _player.moveDown();
+    }
+    if (_keysPressed.contains(LogicalKeyboardKey.arrowLeft)) {
+      _player.moveLeft();
+    }
+    if (_keysPressed.contains(LogicalKeyboardKey.arrowRight)) {
+      _player.moveRight();
+    }
   }
 }
