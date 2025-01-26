@@ -13,8 +13,10 @@ class GameWorld extends Forge2DGame with KeyboardEvents {  // KeyboardEvents mix
   final Ball ball = Ball();
   final Goal goal = Goal();
 
+
   @override
   Future<void> onLoad() async {
+    world.gravity = Vector2(0, 0);
     final background = MainBackground();
     await add(background);
 
@@ -33,11 +35,18 @@ class GameWorld extends Forge2DGame with KeyboardEvents {  // KeyboardEvents mix
       print('키 아래 눌림: ${event.logicalKey}');  // 눌린 키를 로그로 출력
 
       if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-        print('위 화살표 키 눌렀음: 점프');
-      } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+        _player.moveUp();
+        print('왼쪽 화살표 키 눌렀음: 위쪽 이동');
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+        print('왼쪽 화살표 키 눌렀음: 아래쪽 이동');
+        _player.moveDown();
+      }
+      else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
         print('왼쪽 화살표 키 눌렀음: 왼쪽 이동');
+        _player.moveLeft();
       } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
         print('오른쪽 화살표 키 눌렀음: 오른쪽 이동');
+        _player.moveRight();
       }
     }
 
