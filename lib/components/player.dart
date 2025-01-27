@@ -1,26 +1,27 @@
 import 'package:flame/components.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class Player extends BodyComponent with KeyboardHandler {
+abstract class Player extends BodyComponent with KeyboardHandler {
   Player({
     required this.size,
     Vector2? position,
-    this.color = const Color(0xFF4A68BE),
+    required this.color,
   }) : super(
-            bodyDef: BodyDef(
-              type: BodyType.dynamic,
-              position: position,
-              allowSleep: false,
-            ),
-            fixtureDefs: [
-              FixtureDef(
-                CircleShape()..radius = size.x * 0.3,
-                restitution: 0.2,
-              )
-            ]);
+      bodyDef: BodyDef(
+        type: BodyType.dynamic,
+        position: position,
+        allowSleep: false,
+      ),
+      fixtureDefs: [
+        FixtureDef(
+          CircleShape()..radius = size.x * 0.3,
+          restitution: 0.2,
+        ),
+      ]) {
+    bodyDef?.userData = this;
+  }
 
   final Color color;
   final Vector2 size;
@@ -33,11 +34,11 @@ class Player extends BodyComponent with KeyboardHandler {
 
   bool get _isAtLimits =>
       (position.x < size.x * 0.55 && _hAxis < 0) || // 왼쪽 제한
-      (position.x > game.camera.viewport.virtualSize.x - size.x * 0.55 &&
-          _hAxis > 0) || // 오른쪽 제한
-      (position.y < size.y * 2.6 && _vAxis < 0) || // 위쪽 제한
-      (position.y > game.camera.viewport.virtualSize.y - size.y * 2.6 &&
-          _vAxis > 0); // 아래쪽 제한
+          (position.x > game.camera.viewport.virtualSize.x - size.x * 0.55 &&
+              _hAxis > 0) || // 오른쪽 제한
+          (position.y < size.y * 2.6 && _vAxis < 0) || // 위쪽 제한
+          (position.y > game.camera.viewport.virtualSize.y - size.y * 2.6 &&
+              _vAxis > 0); // 아래쪽 제한
 
   @override
   void update(double dt) {
@@ -56,26 +57,17 @@ class Player extends BodyComponent with KeyboardHandler {
   }
 
   @override
-  bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
-    _hAxis = 0; // 수평 방향 초기화
-    _vAxis = 0; // 수직 방향 초기화
+  bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed);
 
-    // 수평 입력 처리
-    if (keysPressed.contains(LogicalKeyboardKey.arrowLeft)) {
-      _hAxis -= 1;
-    }
-    if (keysPressed.contains(LogicalKeyboardKey.arrowRight)) {
-      _hAxis += 1;
-    }
-
-    // 수직 입력 처리
-    if (keysPressed.contains(LogicalKeyboardKey.arrowUp)) {
-      _vAxis -= 1;
-    }
-    if (keysPressed.contains(LogicalKeyboardKey.arrowDown)) {
-      _vAxis += 1;
-    }
-
-    return super.onKeyEvent(event, keysPressed);
+  // hAxis, vAxis getter / setter 추가
+  set hAxis(double value) {
+    _hAxis = value;
   }
+
+  set vAxis(double value) {
+    _vAxis = value;
+  }
+
+  double get hAxis => _hAxis;
+  double get vAxis => _vAxis;
 }

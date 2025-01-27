@@ -5,6 +5,7 @@ class Walls extends BodyComponent {
       : super(
           bodyDef: BodyDef(type: BodyType.static),
           fixtureDefs: [
+            // 위쪽 벽 (충돌)
             FixtureDef(
               PolygonShape()
                 ..setAsBox(
@@ -15,6 +16,7 @@ class Walls extends BodyComponent {
                 ),
               restitution: 1, // 반발력
             ),
+            // 위쪽 벽 (센서)
             FixtureDef(
               PolygonShape()
                 ..setAsBox(
@@ -25,6 +27,7 @@ class Walls extends BodyComponent {
                 ),
               isSensor: true,
             ),
+            // 왼쪽 벽
             FixtureDef(
               PolygonShape()
                 ..setAsBox(
@@ -35,6 +38,7 @@ class Walls extends BodyComponent {
                 ),
               restitution: 1,
             ),
+            // 오른쪽 벽
             FixtureDef(
               PolygonShape()
                 ..setAsBox(
@@ -45,12 +49,24 @@ class Walls extends BodyComponent {
                 ),
               restitution: 1,
             ),
+            // 아래쪽 벽 (센서)
             FixtureDef(
               PolygonShape()
                 ..setAsBox(
                   gameSize.x * 0.5,
                   wallThickness * 0.5,
                   Vector2(gameSize.x * 0.5, gameSize.y - wallThickness * 0.5),
+                  0,
+                ),
+              isSensor: true,
+            ),
+            // 아래쪽 벽 (충돌)
+            FixtureDef(
+              PolygonShape()
+                ..setAsBox(
+                  gameSize.x * 0.5,
+                  wallThickness * 0.1,
+                  Vector2(gameSize.x * 0.5, gameSize.y - wallThickness * 0.1),
                   0,
                 ),
               restitution: 1,
