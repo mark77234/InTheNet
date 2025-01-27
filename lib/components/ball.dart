@@ -1,28 +1,50 @@
+import 'package:flame/components.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:inthenet/components/wall.dart';
+import 'package:inthenet/game/world.dart';
 
-class Ball extends BodyComponent {
-  final double dampingFactor = 0.99; // 속도를 줄이는 계수
+import 'package:inthenet/components/net.dart';
+
+class Ball extends BodyComponent with ContactCallbacks, ParentIsA<InTheNetWorld> {
+  Ball({
+    double radius = 0,
+    Vector2? position,
+  }) : super(
+    bodyDef: BodyDef(
+      type: BodyType.dynamic,
+      position: position,
+      fixedRotation: true,
+      bullet: true,
+    ),
+    fixtureDefs: [
+      FixtureDef(
+        CircleShape()..radius = radius,
+        restitution: 1,
+      ),
+    ],
+  ){
+    bodyDef?.userData = this;
+  }
+
+  @override
+  void beginContact(Object other, Contact contact) {
+    if (other is Net) {
+      other.removeFromParent();
+    } else if (other is Walls &&
+        (contact.fixtureA.isSensor || contact.fixtureB.isSensor)) {
+      parent.reset();
+    }
+  }
 
   @override
   Future<void> onLoad() async {
-    super.onLoad();
-    final ballShape = CircleShape();
-    ballShape.radius = 5.0; // 공의 크기 설정
-
-    final fixtureDef = FixtureDef(ballShape)..restitution = 1;
-
-    body = world.createBody(BodyDef()
-      ..type = BodyType.dynamic
-      ..position = Vector2(250, 400));
-
-    body.createFixture(fixtureDef);
+    await super.onLoad();
+    body.applyLinearImpulse(Vector2(0,0));
   }
 
   @override
   void update(double dt) {
-    super.update(dt);
-
-    // 속도 감소: 공의 속도를 계속해서 줄여줍니다.
-    body.linearVelocity *= dampingFactor;
+    body.linearVelocity *= 0.99;
   }
+
 }

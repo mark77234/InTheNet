@@ -1,71 +1,69 @@
+import 'package:flame/components.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:flutter/services.dart';
 
-class Player extends BodyComponent {
-  final double moveSpeed = 1000000;
-  final double dampingFactor = 0.98;
+class Player extends BodyComponent with KeyboardHandler {
+  Player({
+    required this.size,
+    Vector2? position,
+  }) : super(
+            bodyDef: BodyDef(
+              type: BodyType.dynamic,
+              position: position,
+              allowSleep: false,
+            ),
+            fixtureDefs: [
+              FixtureDef(
+                CircleShape()..radius = size.x * 0.3,
+                restitution: 0.2,
+              )
+            ]);
 
-  @override
-  Future<void> onLoad() async {
-    super.onLoad();
-    final playerShape = CircleShape();
-    playerShape.radius = 15.0;
+  final Vector2 size;
 
-    final fixtureDef = FixtureDef(playerShape);
-    body = world.createBody(BodyDef()
-      ..type = BodyType.dynamic
-      ..position = Vector2(250, 500))
-      ..linearDamping = 0.0 // 선형 감쇠를 0으로 설정하여 속도가 줄어들지 않게 함
-      ..angularDamping = 0.0;
+  double _hAxis = 0;
+  double _vAxis = 0;
 
-    body.createFixture(fixtureDef);
-    // 경계 설정 (화면 크기 기준으로)
-    final screenSize = Vector2(500, 815); // 화면 크기 (필요에 맞게 변경)
+  final double _maxSpeed = 150;
+  final double _friction = 0.95;
 
-    // 왼쪽 경계 (X=0, Y=0에서 Y=600까지)
-    _createBoundary(Vector2(0, 0), Vector2(0, screenSize.y));
-
-    // 오른쪽 경계 (X=500, Y=0에서 X=500, Y=600까지)
-    _createBoundary(Vector2(screenSize.x - 15, 0),
-        Vector2(screenSize.x - 15, screenSize.y));
-
-    // 위쪽 경계 (X=0, Y=0에서 X=500, Y=0까지)
-    _createBoundary(Vector2(0, 50), Vector2(screenSize.x, 50));
-
-    // 아래쪽 경계 (X=0, Y=600에서 X=500, Y=600까지)
-    _createBoundary(
-        Vector2(0, screenSize.y), Vector2(screenSize.x, screenSize.y));
-  }
-
-  void moveLeft() {
-    body.linearVelocity = Vector2(-moveSpeed, body.linearVelocity.y);
-  }
-
-  void moveRight() {
-    body.linearVelocity = Vector2(moveSpeed, body.linearVelocity.y);
-  }
-
-  void moveUp() {
-    body.linearVelocity = Vector2(body.linearVelocity.x, -moveSpeed);
-  }
-
-  void moveDown() {
-    body.linearVelocity = Vector2(body.linearVelocity.x, moveSpeed);
-  }
-
-  void _createBoundary(Vector2 start, Vector2 end) {
-    final edgeShape = EdgeShape();
-    edgeShape.set(start, end);
-
-    final boundaryFixture = FixtureDef(edgeShape);
-    world
-        .createBody(BodyDef()..type = BodyType.static)
-        .createFixture(boundaryFixture);
-  }
+  bool get _isAtLimits =>
+      (position.x < size.x * 0.55 && _hAxis < 0) || // 왼쪽 제한
+      (position.x > game.camera.viewport.virtualSize.x - size.x * 0.55 &&
+          _hAxis > 0) || // 오른쪽 제한
+      (position.y < size.y * 2.6 && _vAxis < 0) || // 위쪽 제한
+      (position.y > game.camera.viewport.virtualSize.y - size.y * 2.6 &&
+          _vAxis > 0); // 아래쪽 제한
 
   @override
   void update(double dt) {
-    super.update(dt);
+    if (!_isAtLimits) {
+      body.applyForce(Vector2(_hAxis * _maxSpeed, _vAxis * _maxSpeed));
+    }
+    body.linearVelocity *= _friction;
+  }
 
-    body.linearVelocity = body.linearVelocity * dampingFactor; // 속도를 감소시킴
+  @override
+  bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+    _hAxis = 0; // 수평 방향 초기화
+    _vAxis = 0; // 수직 방향 초기화
+
+    // 수평 입력 처리
+    if (keysPressed.contains(LogicalKeyboardKey.arrowLeft)) {
+      _hAxis -= 1;
+    }
+    if (keysPressed.contains(LogicalKeyboardKey.arrowRight)) {
+      _hAxis += 1;
+    }
+
+    // 수직 입력 처리
+    if (keysPressed.contains(LogicalKeyboardKey.arrowUp)) {
+      _vAxis -= 1;
+    }
+    if (keysPressed.contains(LogicalKeyboardKey.arrowDown)) {
+      _vAxis += 1;
+    }
+
+    return super.onKeyEvent(event, keysPressed);
   }
 }
