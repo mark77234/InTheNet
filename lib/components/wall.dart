@@ -9,6 +9,16 @@ class Walls extends BodyComponent {
               PolygonShape()
                 ..setAsBox(
                   gameSize.x * 0.5,
+                  wallThickness * 0.1,
+                  Vector2(gameSize.x * 0.5, wallThickness * 0.1),
+                  0,
+                ),
+              restitution: 1, // 반발력
+            ),
+            FixtureDef(
+              PolygonShape()
+                ..setAsBox(
+                  gameSize.x * 0.5,
                   wallThickness * 0.5,
                   Vector2(gameSize.x * 0.5, wallThickness * 0.5),
                   0,

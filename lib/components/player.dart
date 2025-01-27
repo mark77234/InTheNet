@@ -1,11 +1,14 @@
 import 'package:flame/components.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
+
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class Player extends BodyComponent with KeyboardHandler {
   Player({
     required this.size,
     Vector2? position,
+    this.color = const Color(0xFF4A68BE),
   }) : super(
             bodyDef: BodyDef(
               type: BodyType.dynamic,
@@ -19,6 +22,7 @@ class Player extends BodyComponent with KeyboardHandler {
               )
             ]);
 
+  final Color color;
   final Vector2 size;
 
   double _hAxis = 0;
@@ -41,6 +45,14 @@ class Player extends BodyComponent with KeyboardHandler {
       body.applyForce(Vector2(_hAxis * _maxSpeed, _vAxis * _maxSpeed));
     }
     body.linearVelocity *= _friction;
+  }
+
+  @override
+  void render(Canvas canvas) {
+    super.render(canvas);
+
+    final paint = Paint()..color = color;
+    canvas.drawCircle(Offset.zero, body.fixtures[0].shape.radius, paint);
   }
 
   @override
