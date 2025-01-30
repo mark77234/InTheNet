@@ -1,16 +1,8 @@
-# inthenet
+# inthenet 
 
-A new Flutter project.
+### OFFLINE
+1. 상대방의 Net를 맞추면 이기는 게임 ( 2 player ) (개발중)
+2. 스테이지 형식 (미개발)
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### ONLINE
+1. 3 vs 3 실시간 멀티플레이 게임 (미개발)
