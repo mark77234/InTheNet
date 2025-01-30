@@ -2,11 +2,11 @@ import 'package:flame_forge2d/flame_forge2d.dart';
 
 import 'package:flutter/material.dart';
 
-class Net extends BodyComponent {
-  Net({
+class Net1 extends BodyComponent {
+  Net1({
     required Vector2 position,
     required Vector2 size,
-    this.color = const Color(0xFFA55453),
+    this.color = const Color(0xFF4A68BE),
   }) : super(
     bodyDef: BodyDef(type: BodyType.static, position: position),
     fixtureDefs: [
