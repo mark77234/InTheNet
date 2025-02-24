@@ -1,0 +1,36 @@
+name: Flutter Web
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    name: Build Web
+    env:
+      my_secret: $
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'dev'
+      - run: flutter config --enable-web
+      - run: flutter pub get
+      - run: flutter build web --release
+        # 1. change path which exist lib/main.dart
+        working-directory: ./inthenet
+      - run: |
+          # 2. change path to [existed lib/main.dart path]/build/web
+          cd inthenet/build/web
+          git init
+           # 3. change your email
+          git config --global user.email mark77234@naver.com
+          # 4. change your name
+          git config --global user.name mark77234
+          git status
+          # 5. change your repository
+          git remote add origin https://github.com/mark77234/InTheNet.git 
+          git checkout -b gh-pages
+          git add --all
+          git commit -m "update"
+          git push origin gh-pages -f
